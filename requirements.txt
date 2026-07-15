@@ -1,0 +1,5 @@
+python:
+    mne
+    matplotlib
+    numpy
+    scipy
