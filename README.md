@@ -1,68 +1,134 @@
-# EEG Alpha ERD Analysis (Quantifying Motor Imagery Dynamics)
-### EEG 알파 ERD 분석: 운동 상상에 따른 뇌파 다이내믹스의 정량화
-
----
-
-### 🇬🇧 English
-This repository establishes a specialized neuro-data science pipeline to quantify **Event-Related Desynchronization (ERD)** within the Alpha/Mu rhythm (8–12 Hz) during motor imagery tasks. Shifting the focus from black-box machine learning algorithms, this project benchmarks spatial and statistical cortical gating mechanisms over the human motor cortex using the PhysioNet EEGBCI dataset.
-
-### 🇰🇷 한국어
-본 레포지토리는 운동 상상 중 발생하는 알파/뮤 리듬(8-12 Hz)의 **사건관련 동기비동기화(ERD)** 현상을 정량적으로 분석하는 데이터 과학 파이프라인을 구축합니다. 블랙박스 형태의 머신러닝 알고리즘을 넘어, PhysioNet EEGBCI 데이터를 기반으로 인간 운동 피질 영역의 공간적·통계적 피질 게이팅 메커니즘을 검증하는 데 집중합니다.
-
----
-
-## 1. Motivation
-* **EN:** I wanted to deep-dive into how neural oscillations shift dynamically during cognitive states and understand the quantitative mechanics behind neurophysiological suppression (ERD) rather than simply running end-to-end black-box classifiers.
-* **KR:** 단순한 분류기 실행을 넘어, 인지적 상태에 따라 신경 진동(Neural Oscillations)이 어떻게 동적으로 변화하는지 깊이 이해하고, 신경생리학적 억제 현상(ERD)을 정량화하는 분석적 배경을 학습하고자 시작했습니다.
-
----
-
-## 2. Background
-* **Alpha/Mu Rhythm (8–12 Hz):** Synchronized neural oscillations recorded over the sensorimotor cortex that reflect a state of sensory-motor rest.
-* **Event-Related Desynchronization (ERD):** The localized decrease or suppression of these rhythmic amplitudes during active cortical processing or motor imagery, serving as a vital neuro-biomarker for translational BCI profiling.
-
----
-
-## 3. Objectives
-* **Standardize & Map:** Load the PhysioNet EEGBCI dataset using MNE-Python and assign international electrode coordinates.
-* **Isolate Oscillation:** Extract clean Alpha/Mu bands (8-12 Hz) via localized sensory-motor channel selection (C3, Cz, C4).
-* **Quantify ERD:** Measure and visualize time-resolved power suppression during active imagery versus baseline periods.
-
----
-
-## 4. Dataset
-* **Source:** PhysioNet EEG Motor Movement/Imagery Dataset (Subject 1, Motor Imagery Runs)
-* **Configuration:** 64-channel EEG sampled at 160 Hz based on the international 10-10 system.
-
----
-
-## 5. Pipeline (Analytical Framework)
-*(Note: Active development in progress. Individual notebooks are being sequentially constructed.)*
-
-*(참고: 현재 활발히 개발 중입니다. 각 노트북이 순차적으로 구축되고 있습니다.)*
-
----
-
-## 6. Results
-*(Note: Visual outputs will be automatically generated and populated into the `/figures` directory upon notebook execution.)*
-
-*(참고: 노트북 실행 후 생성되는 시각화 결과물이 `/figures` 디렉토리에 순차적으로 채워질 예정입니다.)*
-
----
-
-## 7. Key Findings
-*(Note: Analytical observations and statistical validations will be documented as development progresses.)*
-
-*(참고: 분석 결과에 따른 통계적 검증 및 관찰 사실이 개발 진행에 맞춰 이곳에 기록될 예정입니다.)*
-
----
-
-## 8. Future Work
-*(Note: Future research extensions and multi-subject scaling plans will be continuously updated as the core framework stabilizes.)*
-*(참고: 핵심 프레임워크가 안정화됨에 따라 향후 연구 확장 및 다중 피험자 확장 계획이 지속적으로 업데이트될 예정입니다.)*
-
----
-
-## 9. References
-* Pfurtscheller, G., & Da Silva, F. L. (1999). Event-related EEG/MEG synchronization and desynchronization: basic principles. *Clinical Neurophysiology*.
-* MNE-Python Documentation: Time-frequency and ERD analysis guidelines.
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# EEG Alpha ERD Analysis (Quantifying Motor Imagery Dynamics)\n",
+        "### EEG 알파 ERD 분석: 운동 상상에 따른 뇌파 다이내믹스의 정량화\n",
+        "\n",
+        "---\n",
+        "\n",
+        "### 🇬🇧 English\n",
+        "This repository documents my learning process of analyzing Alpha **Event-Related Desynchronization (ERD)** from EEG signals using MNE-Python. I have built a data science pipeline to quantitatively analyze the ERD (Event-Related Desynchronization) phenomenon of alpha/mu rhythms (8-12 Hz) during motor imagery.\n",
+        "\n",
+        "### 🇰🇷 한국어\n",
+        "본 레포지토리는 MNE-Python을 사용하여 EEG 신호에서 알파 **사건 관련 비동기화(ERD)**를 분석하는 학습 과정에 대한 기록입니다. 운동 상상 중 발생하는 알파/뮤 리듬(8-12 Hz)의 ERD 현상을 정량적으로 분석하는 데이터 과학 파이프라인을 구축했습니다.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Motivation\n",
+        "* **EN:** I wanted to better understand how EEG rhythms change during motor imagery. Instead of starting with machine learning models, I decided to first learn the basic signal processing steps used in computational neuroscience.\n",
+        "* **KR:** 상상 운동 중에 뇌파(EEG) 리듬이 어떻게 변화하는지 이해하려는 동기가 있었습니다. 머신러닝 모델부터 시작하는 대신, 계산신경과학에서 사용되는 기본적 신호 처리 단계부터 학습했습니다.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Background\n",
+        "* **Alpha/Mu Rhythm (8–12 Hz):** A brain rhythm commonly observed over the motor cortex during rest.\n",
+        "* **Event-Related Desynchronization (ERD):** A decrease in Alpha power that occurs when a person performs or imagines a movement.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Objectives\n",
+        "* Load EEG data\n",
+        "* Apply basic preprocessing\n",
+        "* Extract the Alpha band\n",
+        "* Observe Alpha power changes during motor imagery\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Dataset\n",
+        "* **Source:** PhysioNet EEG Motor Movement/Imagery Dataset (Subject 1, Motor Imagery Runs)\n",
+        "* **Configuration:** 64-channel EEG sampled at 160 Hz based on the international 10-10 system.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Repository Structure\n",
+        "```\n",
+        "eeg-alpha-erd-analysis/\n",
+        "│\n",
+        "├── README.md\n",
+        "├── requirements.txt\n",
+        "├── .gitignore\n",
+        "│\n",
+        "├── data/\n",
+        "├── figures/\n",
+        "└── notebooks/\n",
+        "    ├── 01_eeg_loading_visualization.ipynb\n",
+        "    ├── 02_alpha_band_filtering.ipynb\n",
+        "    ├── 03_epoch_extraction.ipynb\n",
+        "    ├── 04_alpha_erd_quantification.ipynb\n",
+        "    └── 05_visualization_statistics.ipynb\n",
+        "```\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Pipeline (Analytical Framework)\n",
+        "01. EEG data loading\n",
+        "\n",
+        "02. Alpha-band filtering\n",
+        "\n",
+        "03. Epoch extraction\n",
+        "\n",
+        "04. ERD calculation\n",
+        "\n",
+        "05. Result visualization\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Results\n",
+        "*This section will be updated as each notebook is completed.*\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Key Findings\n",
+        "*This section will be updated as each notebook is completed.*\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Future Work\n",
+        "* Support multiple subjects\n",
+        "* Compare left and right hand imagery\n",
+        "* Visualize ERD over motor cortex\n",
+        "* Explore simple statistical comparisons\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## References\n",
+        "* Pfurtscheller, G., & Da Silva, F. L. (1999). Event-related EEG/MEG synchronization and desynchronization: basic principles. *Clinical Neurophysiology*.\n",
+        "* MNE-Python Documentation: Time-frequency and ERD analysis guidelines.\n",
+        "* PhysioNet EEG Motor Movement/Imagery Dataset\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Acknowledgement\n",
+        "This project was developed independently for learning and portfolio purposes. Publicly available datasets from PhysioNet and the MNE-Python ecosystem were used throughout this project."
+      ],
+      "metadata": {
+        "id": "hG18nJXEeXeu"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "bmh0R9J5fCOe"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
